@@ -18,7 +18,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.ClipData.Item;
 import android.database.Cursor;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
@@ -315,6 +314,7 @@ public class AddExpense extends Activity {
 	}
 	
 	public void btn_Clear_Click(View v){
+		tvCost.setText("1");
 		tvCost.setText("0");
 	}
 
