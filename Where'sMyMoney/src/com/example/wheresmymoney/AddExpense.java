@@ -15,6 +15,8 @@ import java.util.Calendar;
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ClipData.Item;
 import android.database.Cursor;
@@ -130,10 +132,27 @@ public class AddExpense extends Activity {
 		closeDB();
 	}
 	public void btn_clear_Click(View v){
-		myDB.deleteAll();	
-		Toast.makeText(AddExpense.this, "Expenses deleted", Toast.LENGTH_SHORT).show();
-		//populateListViewFromDB();
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Delete all expenses in listview?").setPositiveButton("Yes", dialogClearExpenses)
+		    .setNegativeButton("No", dialogClearExpenses).show();
+
 	}
+	DialogInterface.OnClickListener dialogClearExpenses = new DialogInterface.OnClickListener() {
+	    @Override
+	    public void onClick(DialogInterface dialog, int which) {
+	        switch (which){
+	        case DialogInterface.BUTTON_POSITIVE:
+	    		myDB.deleteAll();	
+	    		Toast.makeText(AddExpense.this, "Expenses deleted", Toast.LENGTH_SHORT).show();
+	    		//populateListViewFromDB();
+	            break;
+
+	        case DialogInterface.BUTTON_NEGATIVE:
+	            //No button clicked
+	            break;
+	        }
+	    }
+	};
 	public void btn_addExpense_Click(View v) throws IOException{
 
 		Calendar c = Calendar.getInstance();
@@ -146,19 +165,27 @@ public class AddExpense extends Activity {
 			int imageID = imageIDs[chosenSubType];
 			nextImageIndex = (nextImageIndex)%imageIDs.length; //vsakiè da nasledno sliko
 
-			try{			
-				//Add expense
-				myDB.insertRow(date, imageID, tvCost.getText().toString(), imageNAMEs[chosenSubType]);
+			try{	
+
 				
-				//Get new value			
-				String curretnBalance = myDB.getMoney();
-				Double moneyToSpend = Double.parseDouble(tvCost.getText().toString());
-				Double newBalance = Double.parseDouble(curretnBalance)-moneyToSpend;
-				//myDB.insertRow();   prvo vstavimo za dnar
 				
-				//Save new value to DB
-				myDB.updateMoneyRow(newBalance+"");
-				Toast.makeText(AddExpense.this,"You spent "+moneyToSpend+"€", Toast.LENGTH_SHORT).show();
+				if(!tvCost.getText().toString().equals("0")){
+					
+					//Add expense
+					myDB.insertRow(date, imageID, tvCost.getText().toString(), imageNAMEs[chosenSubType]);
+					Double moneyToSpend = Double.parseDouble(tvCost.getText().toString());
+					//Get new value			
+					String curretnBalance = myDB.getMoney();
+					Double newBalance = Double.parseDouble(curretnBalance)-moneyToSpend;
+					//myDB.insertRow();   prvo vstavimo za dnar
+					
+					//Save new value to DB
+					myDB.updateMoneyRow(newBalance+"");
+					Toast.makeText(AddExpense.this,"You spent "+moneyToSpend+"€ on "+imageNAMEs[chosenSubType], Toast.LENGTH_SHORT).show();
+				}
+				else{
+					Toast.makeText(AddExpense.this,"You can't add 0€ expense", Toast.LENGTH_SHORT).show();
+				}
 			}
 			catch(Exception ex){
 				Toast.makeText(AddExpense.this,"Error: "+ex.getMessage(), Toast.LENGTH_LONG).show();	
@@ -172,7 +199,7 @@ public class AddExpense extends Activity {
 	
 
 	public void image1Click(View v){
-		iv1.setBackgroundResource(R.drawable.greenspikeball);
+		iv1.setBackgroundResource(R.drawable.gb);
 		iv2.setBackgroundResource(R.color.BelaOdzadje);
 		iv3.setBackgroundResource(R.color.BelaOdzadje);
 		iv4.setBackgroundResource(R.color.BelaOdzadje);
@@ -182,6 +209,11 @@ public class AddExpense extends Activity {
 		ivv3.setImageResource(imageIDs[7]);
 		ivv4.setImageResource(imageIDs[8]);
 		ivv5.setImageResource(imageIDs[9]);
+		ivv1.setBackgroundResource(R.color.BelaOdzadje);
+		ivv2.setBackgroundResource(R.color.BelaOdzadje);
+		ivv3.setBackgroundResource(R.color.BelaOdzadje);
+		ivv4.setBackgroundResource(R.color.BelaOdzadje);
+		ivv5.setBackgroundResource(R.color.BelaOdzadje);
 		tvChosenType.setText(imageNAMEs[0]);
 		chosenType = 4;
 		chosenSubType=-1;
@@ -191,7 +223,7 @@ public class AddExpense extends Activity {
 	}
 	public void image2Click(View v){
 		iv1.setBackgroundResource(R.color.BelaOdzadje);
-		iv2.setBackgroundResource(R.drawable.greenspikeball);
+		iv2.setBackgroundResource(R.drawable.gb);
 		iv3.setBackgroundResource(R.color.BelaOdzadje);
 		iv4.setBackgroundResource(R.color.BelaOdzadje);
 		iv5.setBackgroundResource(R.color.BelaOdzadje);
@@ -200,6 +232,11 @@ public class AddExpense extends Activity {
 		ivv3.setImageResource(imageIDs[12]);
 		ivv4.setImageResource(imageIDs[13]);
 		ivv5.setImageResource(imageIDs[14]);
+		ivv1.setBackgroundResource(R.color.BelaOdzadje);
+		ivv2.setBackgroundResource(R.color.BelaOdzadje);
+		ivv3.setBackgroundResource(R.color.BelaOdzadje);
+		ivv4.setBackgroundResource(R.color.BelaOdzadje);
+		ivv5.setBackgroundResource(R.color.BelaOdzadje);
 		tvChosenType.setText(imageNAMEs[1]);
 		chosenType=9;
 		chosenSubType=-1;
@@ -207,7 +244,7 @@ public class AddExpense extends Activity {
 	public void image3Click(View v){
 		iv1.setBackgroundResource(R.color.BelaOdzadje);
 		iv2.setBackgroundResource(R.color.BelaOdzadje);
-		iv3.setBackgroundResource(R.drawable.greenspikeball);
+		iv3.setBackgroundResource(R.drawable.gb);
 		iv4.setBackgroundResource(R.color.BelaOdzadje);
 		iv5.setBackgroundResource(R.color.BelaOdzadje);
 		ivv1.setImageResource(imageIDs[15]);
@@ -215,6 +252,11 @@ public class AddExpense extends Activity {
 		ivv3.setImageResource(imageIDs[17]);
 		ivv4.setImageResource(imageIDs[18]);
 		ivv5.setImageResource(imageIDs[19]);
+		ivv1.setBackgroundResource(R.color.BelaOdzadje);
+		ivv2.setBackgroundResource(R.color.BelaOdzadje);
+		ivv3.setBackgroundResource(R.color.BelaOdzadje);
+		ivv4.setBackgroundResource(R.color.BelaOdzadje);
+		ivv5.setBackgroundResource(R.color.BelaOdzadje);
 		tvChosenType.setText(imageNAMEs[2]);
 		chosenType=14;
 		chosenSubType=-1;
@@ -223,13 +265,18 @@ public class AddExpense extends Activity {
 		iv1.setBackgroundResource(R.color.BelaOdzadje);
 		iv2.setBackgroundResource(R.color.BelaOdzadje);
 		iv3.setBackgroundResource(R.color.BelaOdzadje);
-		iv4.setBackgroundResource(R.drawable.greenspikeball);
+		iv4.setBackgroundResource(R.drawable.gb);
 		iv5.setBackgroundResource(R.color.BelaOdzadje);
 		ivv1.setImageResource(imageIDs[20]);
 		ivv2.setImageResource(imageIDs[21]);
 		ivv3.setImageResource(imageIDs[22]);
 		ivv4.setImageResource(imageIDs[23]);
 		ivv5.setImageResource(imageIDs[24]);
+		ivv1.setBackgroundResource(R.color.BelaOdzadje);
+		ivv2.setBackgroundResource(R.color.BelaOdzadje);
+		ivv3.setBackgroundResource(R.color.BelaOdzadje);
+		ivv4.setBackgroundResource(R.color.BelaOdzadje);
+		ivv5.setBackgroundResource(R.color.BelaOdzadje);
 		tvChosenType.setText(imageNAMEs[3]);
 		chosenType=19;
 		chosenSubType=-1;
@@ -239,12 +286,17 @@ public class AddExpense extends Activity {
 		iv2.setBackgroundResource(R.color.BelaOdzadje);
 		iv3.setBackgroundResource(R.color.BelaOdzadje);
 		iv4.setBackgroundResource(R.color.BelaOdzadje);
-		iv5.setBackgroundResource(R.drawable.greenspikeball);
+		iv5.setBackgroundResource(R.drawable.gb);
 		ivv1.setImageResource(imageIDs[25]);
 		ivv2.setImageResource(imageIDs[26]);
 		ivv3.setImageResource(imageIDs[27]);
 		ivv4.setImageResource(imageIDs[28]);
 		ivv5.setImageResource(imageIDs[29]);
+		ivv1.setBackgroundResource(R.color.BelaOdzadje);
+		ivv2.setBackgroundResource(R.color.BelaOdzadje);
+		ivv3.setBackgroundResource(R.color.BelaOdzadje);
+		ivv4.setBackgroundResource(R.color.BelaOdzadje);
+		ivv5.setBackgroundResource(R.color.BelaOdzadje);
 		tvChosenType.setText(imageNAMEs[4]);
 		chosenType=24;
 		chosenSubType=-1;
@@ -252,7 +304,7 @@ public class AddExpense extends Activity {
 	public void imagesub1Click(View v){
 		chosenSubType=chosenType+1;
 		tvChosenType.setText(imageNAMEs[chosenSubType]);
-		ivv1.setBackgroundResource(R.drawable.greenspikeball);
+		ivv1.setBackgroundResource(R.drawable.gb);
 		ivv2.setBackgroundResource(R.color.BelaOdzadje);
 		ivv3.setBackgroundResource(R.color.BelaOdzadje);
 		ivv4.setBackgroundResource(R.color.BelaOdzadje);
@@ -263,7 +315,7 @@ public class AddExpense extends Activity {
 		chosenSubType=chosenType+2;
 		tvChosenType.setText(imageNAMEs[chosenSubType]);
 		ivv1.setBackgroundResource(R.color.BelaOdzadje);
-		ivv2.setBackgroundResource(R.drawable.greenspikeball);
+		ivv2.setBackgroundResource(R.drawable.gb);
 		ivv3.setBackgroundResource(R.color.BelaOdzadje);
 		ivv4.setBackgroundResource(R.color.BelaOdzadje);
 		ivv5.setBackgroundResource(R.color.BelaOdzadje);
@@ -273,7 +325,7 @@ public class AddExpense extends Activity {
 		tvChosenType.setText(imageNAMEs[chosenSubType]);
 		ivv1.setBackgroundResource(R.color.BelaOdzadje);
 		ivv2.setBackgroundResource(R.color.BelaOdzadje);
-		ivv3.setBackgroundResource(R.drawable.greenspikeball);
+		ivv3.setBackgroundResource(R.drawable.gb);
 		ivv4.setBackgroundResource(R.color.BelaOdzadje);
 		ivv5.setBackgroundResource(R.color.BelaOdzadje);
 	}
@@ -283,7 +335,7 @@ public class AddExpense extends Activity {
 		ivv1.setBackgroundResource(R.color.BelaOdzadje);
 		ivv2.setBackgroundResource(R.color.BelaOdzadje);
 		ivv3.setBackgroundResource(R.color.BelaOdzadje);
-		ivv4.setBackgroundResource(R.drawable.greenspikeball);
+		ivv4.setBackgroundResource(R.drawable.gb);
 		ivv5.setBackgroundResource(R.color.BelaOdzadje);
 	}
 	public void imagesub5Click(View v){
@@ -293,7 +345,7 @@ public class AddExpense extends Activity {
 		ivv2.setBackgroundResource(R.color.BelaOdzadje);
 		ivv3.setBackgroundResource(R.color.BelaOdzadje);
 		ivv4.setBackgroundResource(R.color.BelaOdzadje);
-		ivv5.setBackgroundResource(R.drawable.greenspikeball);
+		ivv5.setBackgroundResource(R.drawable.gb);
 	}
 	public void btn_plus1_Click(View v){
 		cost = Double.parseDouble(tvCost.getText().toString());
